@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Encuesta · Herramientas para Abogados</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Georgia', serif;
+    background: #f5f3ef;
+    color: #1a1a1a;
+    min-height: 100vh;
+    padding: 40px 20px 60px;
+  }
+
+  .page {
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid #d4c9b8;
+  }
+
+  .header .eyebrow {
+    font-family: 'Arial', sans-serif;
+    font-size: 11px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: #8a7f6e;
+    margin-bottom: 12px;
+  }
+
+  .header h1 {
+    font-size: 26px;
+    font-weight: normal;
+    color: #1a1a1a;
+    line-height: 1.3;
+    margin-bottom: 10px;
+  }
+
+  .header p {
+    font-size: 14px;
+    color: #6b6155;
+    line-height: 1.6;
+  }
+
+  .header .time-badge {
+    display: inline-block;
+    margin-top: 14px;
+    background: #e8e2d8;
+    color: #5a5045;
+    font-family: 'Arial', sans-serif;
+    font-size: 12px;
+    padding: 5px 14px;
+    border-radius: 20px;
+  }
+
+  /* Sections */
+  .section {
+    margin-bottom: 32px;
+  }
+
+  .section-label {
+    font-family: 'Arial', sans-serif;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #8a7f6e;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #d4c9b8;
+  }
+
+  /* Question blocks */
+  .question {
+    margin-bottom: 20px;
+  }
+
+  .question label {
+    display: block;
+    font-size: 15px;
+    line-height: 1.5;
+    color: #1a1a1a;
+    margin-bottom: 10px;
+  }
+
+  .question .hint {
+    font-size: 12px;
+    color: #8a7f6e;
+    font-family: 'Arial', sans-serif;
+    margin-bottom: 10px;
+    font-style: italic;
+  }
+
+  /* Option grids */
+  .options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .options.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .options.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+
+  .option input[type="radio"],
+  .option input[type="checkbox"] {
+    display: none;
+  }
+
+  .option label {
+    display: block;
+    padding: 10px 14px;
+    background: white;
+    border: 1.5px solid #d4c9b8;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: 'Arial', sans-serif;
+    color: #3a3530;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    line-height: 1.3;
+    margin-bottom: 0;
+  }
+
+  .option input:checked + label {
+    background: #2c3e50;
+    border-color: #2c3e50;
+    color: white;
+  }
+
+  .option label:hover {
+    border-color: #2c3e50;
+    background: #f0ede8;
+  }
+
+  .option input:checked + label:hover {
+    background: #2c3e50;
+  }
+
+  /* Scale */
+  .scale {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .scale-labels {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Arial', sans-serif;
+    font-size: 11px;
+    color: #8a7f6e;
+    margin-top: 6px;
+  }
+
+  .scale .option label {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    font-weight: bold;
+    font-size: 15px;
+    border-radius: 8px;
+  }
+
+  /* Text inputs */
+  textarea, input[type="text"] {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1.5px solid #d4c9b8;
+    border-radius: 8px;
+    font-family: 'Georgia', serif;
+    font-size: 14px;
+    color: #1a1a1a;
+    background: white;
+    resize: vertical;
+    transition: border-color 0.15s;
+    line-height: 1.6;
+  }
+
+  textarea:focus, input[type="text"]:focus {
+    outline: none;
+    border-color: #2c3e50;
+  }
+
+  textarea { min-height: 80px; }
+
+  /* Ranking */
+  .rank-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .rank-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: white;
+    border: 1.5px solid #d4c9b8;
+    border-radius: 8px;
+    padding: 10px 14px;
+    cursor: grab;
+    font-family: 'Arial', sans-serif;
+    font-size: 14px;
+    color: #3a3530;
+    user-select: none;
+    transition: all 0.15s;
+  }
+
+  .rank-item:active { cursor: grabbing; opacity: 0.8; }
+  .rank-item.dragging { opacity: 0.4; }
+  .rank-item.drag-over { border-color: #2c3e50; background: #f0ede8; }
+
+  .rank-num {
+    width: 24px;
+    height: 24px;
+    background: #2c3e50;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    flex-shrink: 0;
+  }
+
+  .drag-handle {
+    color: #b0a898;
+    font-size: 16px;
+    margin-left: auto;
+  }
+
+  /* Divider */
+  .divider {
+    height: 1px;
+    background: #d4c9b8;
+    margin: 8px 0 24px;
+  }
+
+  /* Submit */
+  .submit-area {
+    text-align: center;
+    margin-top: 40px;
+    padding-top: 28px;
+    border-top: 1px solid #d4c9b8;
+  }
+
+  .submit-area p {
+    font-size: 13px;
+    color: #8a7f6e;
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+
+  button[type="submit"] {
+    background: #2c3e50;
+    color: white;
+    border: none;
+    padding: 14px 40px;
+    border-radius: 8px;
+    font-family: 'Arial', sans-serif;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: background 0.2s;
+  }
+
+  button[type="submit"]:hover { background: #1a252f; }
+
+  /* Thank you */
+  .thankyou {
+    display: none;
+    text-align: center;
+    padding: 60px 20px;
+  }
+
+  .thankyou .icon { font-size: 48px; margin-bottom: 20px; }
+  .thankyou h2 { font-size: 24px; font-weight: normal; margin-bottom: 12px; }
+  .thankyou p { font-size: 15px; color: #6b6155; line-height: 1.6; }
+
+  @media (max-width: 480px) {
+    .options.grid-2, .options.grid-3 { grid-template-columns: 1fr; }
+    .scale { gap: 4px; }
+    .scale .option label { width: 38px; height: 38px; font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div class="eyebrow">Iudex · Módulo Abogados</div>
+    <h1>Ayudanos a construir<br>la herramienta que necesitás</h1>
+    <p>Tus respuestas guiarán el diseño de un sistema pensado para abogados.<br>No hay respuestas correctas — solo tu experiencia real importa.</p>
+    <div class="time-badge">⏱ Menos de 5 minutos</div>
+  </div>
+
+  <form id="survey">
+
+    <!-- SECTION 1: PERFIL -->
+    <div class="section">
+      <div class="section-label">Tu perfil</div>
+
+      <div class="question">
+        <label>¿Cuántos años llevás ejerciendo?</label>
+        <div class="options">
+          <div class="option"><input type="radio" name="anos" id="a1" value="0-3"><label for="a1">Menos de 3</label></div>
+          <div class="option"><input type="radio" name="anos" id="a2" value="3-10"><label for="a2">3 a 10 años</label></div>
+          <div class="option"><input type="radio" name="anos" id="a3" value="10-20"><label for="a3">10 a 20 años</label></div>
+          <div class="option"><input type="radio" name="anos" id="a4" value="20+"><label for="a4">Más de 20</label></div>
+        </div>
+      </div>
+
+      <div class="question">
+        <label>¿En qué fueros trabajás principalmente?</label>
+        <div class="hint">Podés marcar más de uno.</div>
+        <div class="options grid-3">
+          <div class="option"><input type="checkbox" name="fuero" id="f1" value="civil"><label for="f1">Civil</label></div>
+          <div class="option"><input type="checkbox" name="fuero" id="f2" value="laboral"><label for="f2">Laboral</label></div>
+          <div class="option"><input type="checkbox" name="fuero" id="f3" value="comercial"><label for="f3">Comercial</label></div>
+          <div class="option"><input type="checkbox" name="fuero" id="f4" value="penal"><label for="f4">Penal</label></div>
+          <div class="option"><input type="checkbox" name="fuero" id="f5" value="familia"><label for="f5">Familia</label></div>
+          <div class="option"><input type="checkbox" name="fuero" id="f6" value="otro"><label for="f6">Otro</label></div>
+        </div>
+      </div>
+
+      <div class="question">
+        <label>¿Cuántas causas activas manejás aproximadamente?</label>
+        <div class="options">
+          <div class="option"><input type="radio" name="causas" id="c1" value="1-20"><label for="c1">Menos de 20</label></div>
+          <div class="option"><input type="radio" name="causas" id="c2" value="20-50"><label for="c2">20 a 50</label></div>
+          <div class="option"><input type="radio" name="causas" id="c3" value="50-100"><label for="c3">50 a 100</label></div>
+          <div class="option"><input type="radio" name="causas" id="c4" value="100+"><label for="c4">Más de 100</label></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 2: GESTIÓN -->
+    <div class="section">
+      <div class="section-label">Gestión de expedientes</div>
+
+      <div class="question">
+        <label>¿Cómo organizás tus expedientes hoy?</label>
+        <div class="options grid-2">
+          <div class="option"><input type="radio" name="org" id="o1" value="papel"><label for="o1">📁 Solo carpetas físicas</label></div>
+          <div class="option"><input type="radio" name="org" id="o2" value="digital_basico"><label for="o2">💻 Carpetas en la PC</label></div>
+          <div class="option"><input type="radio" name="org" id="o3" value="software"><label for="o3">🗂 Software de gestión</label></div>
+          <div class="option"><input type="radio" name="org" id="o4" value="mixto"><label for="o4">🔀 Combinación de todo</label></div>
+        </div>
+      </div>
+
+      <div class="question">
+        <label>¿Qué tan seguido tenés problemas para encontrar un documento cuando lo necesitás?</label>
+        <div class="options">
+          <div class="option"><input type="radio" name="buscar" id="b1" value="nunca"><label for="b1">Casi nunca</label></div>
+          <div class="option"><input type="radio" name="buscar" id="b2" value="aveces"><label for="b2">A veces</label></div>
+          <div class="option"><input type="radio" name="buscar" id="b3" value="seguido"><label for="b3">Seguido</label></div>
+          <div class="option"><input type="radio" name="buscar" id="b4" value="siempre"><label for="b4">Es un problema constante</label></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 3: PRIORIDADES -->
+    <div class="section">
+      <div class="section-label">Qué te importa más</div>
+
+      <div class="question">
+        <label>Ordená estos problemas de mayor a menor según cuánto te afectan.<br><span class="hint">Arrastrá para reordenar — el primero es el más importante.</span></label>
+        <div class="rank-list" id="rankList">
+          <div class="rank-item" draggable="true" data-value="busqueda">
+            <div class="rank-num">1</div>
+            Encontrar documentos rápido
+            <span class="drag-handle">⠿</span>
+          </div>
+          <div class="rank-item" draggable="true" data-value="escritos">
+            <div class="rank-num">2</div>
+            Redactar escritos más rápido
+            <span class="drag-handle">⠿</span>
+          </div>
+          <div class="rank-item" draggable="true" data-value="plazos">
+            <div class="rank-num">3</div>
+            No perder plazos procesales
+            <span class="drag-handle">⠿</span>
+          </div>
+          <div class="rank-item" draggable="true" data-value="estado">
+            <div class="rank-num">4</div>
+            Saber el estado de cada causa de un vistazo
+            <span class="drag-handle">⠿</span>
+          </div>
+          <div class="rank-item" draggable="true" data-value="clientes">
+            <div class="rank-num">5</div>
+            Responder a clientes sin perder tiempo
+            <span class="drag-handle">⠿</span>
+          </div>
+        </div>
+        <input type="hidden" name="ranking" id="rankingValue">
+      </div>
+    </div>
+
+    <!-- SECTION 4: ESCRITOS -->
+    <div class="section">
+      <div class="section-label">Escritos y redacción</div>
+
+      <div class="question">
+        <label>¿Cuánto tiempo te lleva en promedio redactar un escrito estándar (sin contar investigación)?</label>
+        <div class="options">
+          <div class="option"><input type="radio" name="tiempo_escrito" id="t1" value="15min"><label for="t1">Menos de 15 min</label></div>
+          <div class="option"><input type="radio" name="tiempo_escrito" id="t2" value="30min"><label for="t2">15 a 30 min</label></div>
+          <div class="option"><input type="radio" name="tiempo_escrito" id="t3" value="1h"><label for="t3">30 min a 1 hora</label></div>
+          <div class="option"><input type="radio" name="tiempo_escrito" id="t4" value="1h+"><label for="t4">Más de 1 hora</label></div>
+        </div>
+      </div>
+
+      <div class="question">
+        <label>¿Tenés modelos o plantillas de escritos que reutilizás?</label>
+        <div class="options">
+          <div class="option"><input type="radio" name="plantillas" id="p1" value="no"><label for="p1">No, redacto desde cero</label></div>
+          <div class="option"><input type="radio" name="plantillas" id="p2" value="informal"><label for="p2">Sí, guardados informalmente</label></div>
+          <div class="option"><input type="radio" name="plantillas" id="p3" value="organizado"><label for="p3">Sí, bien organizados</label></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 5: TECNOLOGÍA -->
+    <div class="section">
+      <div class="section-label">Tecnología</div>
+
+      <div class="question">
+        <label>¿Desde dónde trabajás habitualmente?</label>
+        <div class="options grid-3">
+          <div class="option"><input type="checkbox" name="dispositivo" id="d1" value="desktop"><label for="d1">🖥 PC de escritorio</label></div>
+          <div class="option"><input type="checkbox" name="dispositivo" id="d2" value="notebook"><label for="d2">💻 Notebook</label></div>
+          <div class="option"><input type="checkbox" name="dispositivo" id="d3" value="celular"><label for="d3">📱 Celular</label></div>
+        </div>
+      </div>
+
+      <div class="question">
+        <label>¿Cómo te sentís con el uso de software en tu trabajo diario?</label>
+        <div class="options">
+          <div class="option"><input type="radio" name="tech" id="tech1" value="basico"><label for="tech1">Uso lo básico</label></div>
+          <div class="option"><input type="radio" name="tech" id="tech2" value="comodo"><label for="tech2">Me siento cómodo</label></div>
+          <div class="option"><input type="radio" name="tech" id="tech3" value="avanzado"><label for="tech3">Soy muy digital</label></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 6: ABIERTA -->
+    <div class="section">
+      <div class="section-label">Tu voz</div>
+
+      <div class="question">
+        <label>¿Cuál es el mayor problema que tenés hoy en la gestión de tu trabajo que una herramienta digital podría resolver?</label>
+        <textarea name="problema_principal" placeholder="Escribí con libertad, cualquier detalle ayuda..."></textarea>
+      </div>
+
+      <div class="question">
+        <label>¿Hay algo más que quieras agregar?</label>
+        <textarea name="adicional" placeholder="Comentarios, ideas, o lo que quieras..."></textarea>
+      </div>
+    </div>
+
+    <div class="submit-area">
+      <p>Tus respuestas son anónimas y se usan exclusivamente<br>para diseñar esta herramienta.</p>
+      <button type="submit">Enviar respuestas →</button>
+      <p id="send-error" style="display:none; margin-top:16px; color:#b94a48; font-family:'Arial',sans-serif; font-size:13px; line-height:1.6;">
+        Hubo un problema al enviar. Tus respuestas se descargaron como archivo de texto —<br>
+        por favor envialo a <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="fda9a8a2b8b0bcb4b1bd9a909c9491d39e9290">[email&#160;protected]</a></strong> cuando puedas. ¡Gracias!
+      </p>
+    </div>
+
+  </form>
+
+  <div class="thankyou" id="thankyou">
+    <div class="icon">🙏</div>
+    <h2>Muchas gracias por tu tiempo</h2>
+    <p>Tu experiencia es exactamente lo que necesitamos para<br>construir algo que realmente valga la pena usar.</p>
+  </div>
+
+</div>
+
+<!-- EmailJS SDK -->
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>
+  // ════════════════════════════════════════════════════════
+  //  ⚙️  CONFIGURATION — fill these in after EmailJS setup
+  // ════════════════════════════════════════════════════════
+  const EMAILJS_PUBLIC_KEY   = '0f2bFDzG8i97sRFuw';   // Account → API Keys
+  const EMAILJS_SERVICE_ID   = 'service_n2xsc0j';   // Email Services → Service ID
+  const EMAILJS_TEMPLATE_ID  = 'template_4d5h123';  // Email Templates → Template ID
+
+  emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+
+  // ── Label maps (human-readable answers in the email) ────
+  const LABELS = {
+    anos:           { '0-3': 'Menos de 3 años', '3-10': '3 a 10 años', '10-20': '10 a 20 años', '20+': 'Más de 20 años' },
+    fuero:          { civil: 'Civil', laboral: 'Laboral', comercial: 'Comercial', penal: 'Penal', familia: 'Familia', otro: 'Otro' },
+    causas:         { '1-20': 'Menos de 20', '20-50': '20 a 50', '50-100': '50 a 100', '100+': 'Más de 100' },
+    org:            { papel: 'Solo carpetas físicas', digital_basico: 'Carpetas en la PC', software: 'Software de gestión', mixto: 'Combinación de todo' },
+    buscar:         { nunca: 'Casi nunca', aveces: 'A veces', seguido: 'Seguido', siempre: 'Es un problema constante' },
+    tiempo_escrito: { '15min': 'Menos de 15 min', '30min': '15 a 30 min', '1h': '30 min a 1 hora', '1h+': 'Más de 1 hora' },
+    plantillas:     { no: 'No, redacto desde cero', informal: 'Sí, guardados informalmente', organizado: 'Sí, bien organizados' },
+    dispositivo:    { desktop: 'PC de escritorio', notebook: 'Notebook', celular: 'Celular' },
+    tech:           { basico: 'Uso lo básico', comodo: 'Me siento cómodo', avanzado: 'Soy muy digital' },
+    ranking:        { busqueda: 'Encontrar documentos rápido', escritos: 'Redactar escritos más rápido', plazos: 'No perder plazos procesales', estado: 'Ver estado de causa de un vistazo', clientes: 'Responder a clientes sin perder tiempo' },
+  };
+
+  // ── Drag & drop ranking ──────────────────────────────────
+  const list = document.getElementById('rankList');
+  let dragged = null;
+
+  function attachDragListeners(item) {
+    item.addEventListener('dragstart', e => {
+      dragged = item;
+      setTimeout(() => item.classList.add('dragging'), 0);
+    });
+    item.addEventListener('dragend', () => {
+      item.classList.remove('dragging');
+      list.querySelectorAll('.rank-item').forEach(i => i.classList.remove('drag-over'));
+      updateRankNumbers();
+      dragged = null;
+    });
+  }
+
+  list.querySelectorAll('.rank-item').forEach(attachDragListeners);
+
+  list.addEventListener('dragover', e => {
+    e.preventDefault();
+    if (!dragged) return;
+    const target = e.target.closest('.rank-item');
+    if (!target || target === dragged) return;
+    list.querySelectorAll('.rank-item').forEach(i => i.classList.remove('drag-over'));
+    target.classList.add('drag-over');
+    const rect = target.getBoundingClientRect();
+    const after = e.clientY > rect.top + rect.height / 2;
+    const ref = after ? target.nextSibling : target;
+    if (ref !== dragged) list.insertBefore(dragged, ref);
+  });
+
+  function updateRankNumbers() {
+    const items = list.querySelectorAll('.rank-item');
+    items.forEach((item, i) => item.querySelector('.rank-num').textContent = i + 1);
+    document.getElementById('rankingValue').value =
+      Array.from(items).map(i => i.dataset.value).join(',');
+  }
+
+  updateRankNumbers();
+
+  // ── Collect form answers ─────────────────────────────────
+  function collectAnswers() {
+    const data = new FormData(document.getElementById('survey'));
+    const raw = {};
+    for (let [key, value] of data.entries()) {
+      if (raw[key]) {
+        raw[key] = Array.isArray(raw[key]) ? [...raw[key], value] : [raw[key], value];
+      } else {
+        raw[key] = value;
+      }
+    }
+    return raw;
+  }
+
+  // ── Format answers into a readable email body ────────────
+  function formatForEmail(raw) {
+    const label = (field, val) => LABELS[field]?.[val] ?? val;
+
+    const rankingFormatted = (raw.ranking || '')
+      .split(',')
+      .map((v, i) => `  ${i + 1}. ${LABELS.ranking[v] ?? v}`)
+      .join('\n');
+
+    const fueros = Array.isArray(raw.fuero)
+      ? raw.fuero.map(v => label('fuero', v)).join(', ')
+      : label('fuero', raw.fuero ?? '—');
+
+    const dispositivos = Array.isArray(raw.dispositivo)
+      ? raw.dispositivo.map(v => label('dispositivo', v)).join(', ')
+      : label('dispositivo', raw.dispositivo ?? '—');
+
+    return `
+ENCUESTA IUDEX · MÓDULO ABOGADOS
+Recibida: ${new Date().toLocaleString('es-AR')}
+${'─'.repeat(48)}
+
+PERFIL
+  Años de ejercicio : ${label('anos', raw.anos ?? '—')}
+  Fueros            : ${fueros}
+  Causas activas    : ${label('causas', raw.causas ?? '—')}
+
+GESTIÓN DE EXPEDIENTES
+  Organización hoy  : ${label('org', raw.org ?? '—')}
+  Problema al buscar: ${label('buscar', raw.buscar ?? '—')}
+
+PRIORIDADES (de mayor a menor)
+${rankingFormatted || '  No completado'}
+
+ESCRITOS
+  Tiempo por escrito: ${label('tiempo_escrito', raw.tiempo_escrito ?? '—')}
+  Uso de plantillas : ${label('plantillas', raw.plantillas ?? '—')}
+
+TECNOLOGÍA
+  Dispositivos      : ${dispositivos}
+  Comodidad digital : ${label('tech', raw.tech ?? '—')}
+
+RESPUESTAS ABIERTAS
+  Problema principal:
+  ${raw.problema_principal || '(sin respuesta)'}
+
+  Comentario adicional:
+  ${raw.adicional || '(sin respuesta)'}
+${'─'.repeat(48)}
+    `.trim();
+  }
+
+  // ── Submit handler ───────────────────────────────────────
+  document.getElementById('survey').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    updateRankNumbers();
+
+    const btn = this.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    btn.textContent = 'Enviando...';
+
+    const raw = collectAnswers();
+    const bodyText = formatForEmail(raw);
+
+    try {
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        survey_body: bodyText,
+        submitted_at: new Date().toLocaleString('es-AR'),
+      });
+
+      showThankYou();
+
+    } catch (err) {
+      console.error('EmailJS error:', err);
+      // ── Fallback: download as JSON file ──────────────────
+      const blob = new Blob([bodyText], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `encuesta_iudex_${Date.now()}.txt`;
+      a.click();
+      URL.revokeObjectURL(url);
+
+      btn.disabled = false;
+      btn.textContent = 'Enviar respuestas →';
+
+      // Show a soft error message
+      const errMsg = document.getElementById('send-error');
+      if (errMsg) errMsg.style.display = 'block';
+    }
+  });
+
+  function showThankYou() {
+    document.getElementById('survey').style.display = 'none';
+    document.getElementById('thankyou').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
